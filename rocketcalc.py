@@ -57,8 +57,8 @@ def calculate(file, temp_string, name=None):
                 current_acceleration = current_resultant_force / current_mass_kilograms
 
                 #print(int(current_resultant_force))
-                untapped_data.iat[foo, 3] = str(round(float(current_resultant_force), 4)) + " N"
-                untapped_data.iat[foo, 4] = str(round(float(current_acceleration), 4)) + " m/s²"
+                untapped_data.at[foo, 'resultantForce'] = str(round(float(current_resultant_force), 2)) + " N"
+                untapped_data.at[foo, 'acceleration'] = str(round(float(current_acceleration), 2)) + " m/s²"
                 
                 # Pointer
                 foo += 1
