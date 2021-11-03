@@ -87,7 +87,7 @@ def main():
         if len(args) >=1:
             if args[0] == "-csv":
                 file = args[1]
-                calculate(file)
+                calculate(file, f"csv {file}")
             elif args[0] == "-name" and args[2] == "-csv":
                 file = args[3]
                 name = args[1]
