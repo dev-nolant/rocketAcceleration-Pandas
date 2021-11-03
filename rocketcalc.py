@@ -1,6 +1,9 @@
 import pandas as pd
 import os
 import sys
+import time
+
+start_time = time.time()
 
 # Set current working directory to execution directory
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -10,7 +13,7 @@ def run():
     temp_string = ""
     while True:
         temp_string = input("Enter name of CSV to calculate or Name of Object you wish to print \
-                        (enter 'format' for the required format) or exit: ")
+        (enter 'format' for the required format) or exit: ")
         if temp_string == "exit":
             break
         elif "csv" in temp_string and "name" not in temp_string:
@@ -54,16 +57,21 @@ def calculate(file, temp_string, name=None):
                 current_acceleration = current_resultant_force / current_mass_kilograms
 
                 #print(int(current_resultant_force))
-                untapped_data.iat[foo, 3] = round(float(current_resultant_force), 4)
-                untapped_data.iat[foo, 4] = round(float(current_acceleration), 4)
+                untapped_data.iat[foo, 3] = str(round(float(current_resultant_force), 4)) + " N"
+                untapped_data.iat[foo, 4] = str(round(float(current_acceleration), 4)) + " m/s²"
                 
                 # Pointer
                 foo += 1
 
         except Exception as e:
-            untapped_data.to_csv(file, index=False)
+            untapped_data.to_csv("modified_"+file, index=False)
             os.system("clear")
-            print(f"Calculations finished\n\n---------LOG---------\n{e}")
+            time_calculation = round(time.time() - start_time, 2)
+            if time_calculation < 1:
+                ending = "ms"
+            else:
+                ending = "mins"
+            print(f"Calculations finished\n\n---------LOG---------\n{e}\nTime Taken: {time_calculation}{ending}\n")
     elif "name" in temp_string:
         os.system("clear")
         data = untapped_data.loc[untapped_data['object_name'] == name]
@@ -79,19 +87,27 @@ def calculate(file, temp_string, name=None):
         os.system("clear")
         print("Unable to access CSV")
 
+
+#-----------------------------------------------------------------------
 # Arguments
 def main():
     
     args = sys.argv[1:]
     try:
         if len(args) >=1:
-            if args[0] == "-csv":
-                file = args[1]
+            if "-csv" in args and "-name" not in args:
+                child_location = int(args.index("-csv")) + 1
+                file = args[child_location]
                 calculate(file, f"csv {file}")
-            elif args[0] == "-name" and args[2] == "-csv":
-                file = args[3]
-                name = args[1]
-                calculate(file=file, temp_string=(f"name {name} csv {file}"), name=name)
+            elif "-name" in args and "-csv" in args:
+                child_location_file = int(args.index("-csv")) + 1
+                child_location_name = int(args.index("-name")) + 1
+                if "-name" not in args[child_location_file] and "-csv" not in args[child_location_name]:
+                    file = args[child_location_file]
+                    name = args[child_location_name]
+                    calculate(file=file, temp_string=(f"name {name} csv {file}"), name=name)
+                else:
+                    print(f"rocketcalc.py[ Missing argument(1) ]")
             elif args[0] == "-run":
                 run()
             else:
@@ -100,7 +116,9 @@ def main():
     except Exception as e:
         os.system("clear")
         if "list index" in str(e):
-            print(f"Missing argument")
+            print(f"rocketcalc.py[ Missing argument(1) ]")
+        elif "local variable" in str(e):
+            print("rocketcalc.py[ Exit(0) ]")
         else:
             print(f"ERROR: {e}")
 
