@@ -5,10 +5,16 @@ import time
 
 start_time = time.time()
 
-# Set current working directory to execution directory
+"""[General director set]
+Sets the working directory to the current directory \
+that the __main__ file is being executed from
+"""
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-# Basic usage manipulation
+"""[General UI render and parse]
+Will ask user a series of questions, and then respond \
+accordingly.
+"""
 def run():
     temp_string = ""
     while True:
@@ -30,7 +36,10 @@ def run():
             print("Please enter proper format\n")
     calculate(file, temp_string, name)
 
-# Calculate function for acceleration and resultant
+"""[Calculations and Resultant]
+Takes file, string, and name input in order to calculate \
+the resultant force, as well as, calculate the launch needed.
+"""
 def calculate(file, temp_string, name=None):
     untapped_data = pd.read_csv(file)
     foo = 0
@@ -88,8 +97,9 @@ def calculate(file, temp_string, name=None):
         print("Unable to access CSV")
 
 
-#-----------------------------------------------------------------------
-# Arguments
+"""[Argument parser]
+Parse command line arguments and then respond accordingly.
+"""
 def main():
     
     args = sys.argv[1:]
